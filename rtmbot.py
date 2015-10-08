@@ -60,7 +60,7 @@ class RtmBot(object):
                     if limiter == True:
                         time.sleep(.1)
                         limiter = False
-                    message = output[1].encode('ascii','ignore')
+                    message = output[1].encode('utf-8','ignore')
                     channel.send_message("{}".format(message))
                     limiter = True
     def crons(self):
@@ -198,4 +198,3 @@ if __name__ == "__main__":
             with daemon.DaemonContext():
                 main_loop()
     main_loop()
-
