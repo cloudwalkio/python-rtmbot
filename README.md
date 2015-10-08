@@ -11,6 +11,14 @@ Some differences to webhooks:
 3. Logs in as a slack user (or bot)
 4. Bot users must be invited to a channel
 
+Robbie
+------
+
+This fork includes our bot Robbie, used to manager our stand-up meetings. If you
+want to get it's code, look at the (plugins/meeting)[./plugins/meeting]
+directory. There are lots of comments there. I also suggest you to read the other
+portions of this README.
+
 Dependencies
 ----------
 * websocket-client https://pypi.python.org/pypi/websocket-client/
@@ -29,7 +37,7 @@ Installation
         pip install -r requirements.txt
 
 3. Configure rtmbot (https://api.slack.com/bot-users)
-        
+
         cp doc/example-config/rtmbot.conf .
         vi rtmbot.conf
           SLACK_TOKEN: "xoxb-11111111111-222222222222222"
@@ -68,7 +76,7 @@ Plugins can send messages back to any channel, including direct messages. This i
 
     outputs = []
     outputs.append(["C12345667", "hello world"])
-        
+
 *Note*: you should always create the outputs array at the start of your program, i.e. ```outputs = []```
 
 ####Timed jobs
