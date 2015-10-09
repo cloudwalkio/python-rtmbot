@@ -156,6 +156,8 @@ class StandUpQueue(object):
                         # Accomplish person on channel
                         self.outputs.append([self.channel_id,
                                         accomplish(user, self.wait_to_accomplish)])
+                        # Reset counter to give people time to read the report
+                        self.last_call = time.time()
                     else:
                         print 'Invalid report'
 
