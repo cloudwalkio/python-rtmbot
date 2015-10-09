@@ -15,10 +15,10 @@ WAIT_TO_ACCOMPLISH = 10
 # Seconds to wait between greeting the channel and calling the first person
 # In fact this means we'll effectively wait WAIT_BEFORE_START + WAIT_TO_CALL_NEXT
 # seconds before starting to call people
-WAIT_BEFORE_START = 1*60
+WAIT_BEFORE_START = 2*60
 # Set this to true when developing to avoid Robbie starting a meeting on
 # our stand-up channel
-DEV = True
+DEV = False
 
 # Load rtmbot configuration
 config = yaml.load(file('rtmbot.conf', 'r'))
