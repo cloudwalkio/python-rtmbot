@@ -15,7 +15,7 @@ Robbie
 ------
 
 This fork includes our bot Robbie, used to manager our stand-up meetings. If you
-want to get it's code, look at the (plugins/meeting)[./plugins/meeting]
+want to get it's code, look at the [plugins/meeting](./plugins/meeting)
 directory. There are lots of comments there. I also suggest you to read the other
 portions of this README.
 
