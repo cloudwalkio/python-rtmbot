@@ -19,6 +19,18 @@ want to get it's code, look at the [plugins/meeting](./plugins/meeting)
 directory. There are lots of comments there. I also suggest you to read the other
 portions of this README.
 
+Running it with Docker
+----------------------
+
+You can build a Docker image running this from this directory:
+
+        docker build -t cloudwalk/robbie .
+
+To run it you need to set container's environment variable `SLACK_TOKEN` with the
+token you get when creating the bot:
+
+        docker run -ti -e SLACK_TOKEN="xoxb-111111111111-2222222222222222222" cloudwalk/robbie
+
 Dependencies
 ----------
 * websocket-client https://pypi.python.org/pypi/websocket-client/
