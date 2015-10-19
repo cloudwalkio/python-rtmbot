@@ -24,6 +24,7 @@ class RtmBot(object):
         self.token = token
         self.bot_plugins = []
         self.slack_client = None
+        self.exit = False
     def connect(self):
         """Convenience method that creates Server instance"""
         self.slack_client = SlackClient(self.token)
@@ -31,7 +32,7 @@ class RtmBot(object):
     def start(self):
         self.connect()
         self.load_plugins()
-        while True:
+        while True and not self.exit:
             for reply in self.slack_client.rtm_read():
                 self.input(reply)
             self.crons()
@@ -53,6 +54,8 @@ class RtmBot(object):
                 plugin.do(function_name, data)
     def output(self):
         for plugin in self.bot_plugins:
+            if plugin.name == 'robbie':
+                self.exit = plugin.exit
             limiter = False
             for output in plugin.do_output():
                 channel = self.slack_client.server.channels.find(output[0])
@@ -85,6 +88,7 @@ class Plugin(object):
         self.module = __import__(name)
         self.register_jobs()
         self.outputs = []
+        self.exit = False
         if name in config:
             logging.info("config found for: " + name)
             self.module.config = config[name]
@@ -120,6 +124,8 @@ class Plugin(object):
         output = []
         while True:
             if 'outputs' in dir(self.module):
+                if 'exit' in dir(self.module):
+                    self.exit = self.module.exit
                 if len(self.module.outputs) > 0:
                     logging.info("output from {}".format(self.module))
                     output.append(self.module.outputs.pop(0))
