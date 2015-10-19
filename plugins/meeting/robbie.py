@@ -27,6 +27,7 @@ sc = SlackClient(config["SLACK_TOKEN"])
 # Default rtmbot lists for sending messages and to periodically execute code
 crontable = []
 outputs = []
+exit = False
 
 # This is Robbie's ID
 BOT_ID = 'U0BDUEDC4'
@@ -48,9 +49,12 @@ attendants = StandUpQueue(wait_to_accomplish=WAIT_TO_ACCOMPLISH,
 # Add our check to crontable. It's responsible for the timed actions
 crontable.append([5,"check"])
 def check():
-    global attendants
+    global attendants, exit
     attendants.check_timeout()
     attendants.call_next()
+    # See if the meeting is finished. In this case rtmbot will know it should
+    # stop running
+    exit = attendants.finished
 
 logging.info('Now we process')
 def process_message(data):
