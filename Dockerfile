@@ -11,7 +11,7 @@ COPY . /src/rtmbot
 RUN pip install -r requirements.txt
 
 # Create a startup.sh bash script to create a rtmbot.conf with SLACK_TOKEN before running the bot
-RUN echo '#!/bin/bash\n echo "SLACK_TOKEN: $SLACK_TOKEN" >> /src/rtmbot/rtmbot.conf  \nexec /src/rtmbot/rtmbot.py' >> startup.sh && \
+RUN echo '#!/bin/bash\n echo "DEBUG: False \nSLACK_TOKEN: $SLACK_TOKEN" >> /src/rtmbot/rtmbot.conf  \nexec /src/rtmbot/rtmbot.py' >> startup.sh && \
     chmod +x startup.sh
 
 ENTRYPOINT ["/src/rtmbot/startup.sh"]
