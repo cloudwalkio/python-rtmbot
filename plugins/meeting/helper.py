@@ -97,13 +97,10 @@ def goodbye():
     return random.choice(responses)
 
 def is_valid_report(message):
-    """ Check is a report is valid, i.e., if it has 1), 2) and 3) or
-        1., 2. and 3. in the message body.
+    """ Check if a report is valid, i.e., if it has more than 6 lines, more than
+        150 chars and has '-' on tick.
     """
-    valid_report = True
-    for i in range(1,4): # We have three items on a report: (1, 2, 3)
-        valid_report = valid_report and ('%d)' % i in message or '%d.' % i in message)
-    return valid_report
+    return len(message.split('\n')) >= 6 and '-' in message and len(message) > 150
 
 class StandUpQueue(object):
     def __init__(self, wait_to_accomplish, wait_before_start, wait_to_call_next,
