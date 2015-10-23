@@ -18,11 +18,12 @@ WAIT_TO_ACCOMPLISH = 10
 WAIT_BEFORE_START = 1.5*60
 # Set this to true when developing to avoid Robbie starting a meeting on
 # our stand-up channel
-DEV = False
 
 # Load rtmbot configuration
 config = yaml.load(file('rtmbot.conf', 'r'))
 sc = SlackClient(config["SLACK_TOKEN"])
+
+DEV = config["DEV"]
 
 # Default rtmbot lists for sending messages and to periodically execute code
 crontable = []
