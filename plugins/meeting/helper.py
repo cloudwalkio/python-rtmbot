@@ -33,12 +33,23 @@ def call(person, first=False):
                      "%s: your turn"]
     return random.choice(responses) % link(person)
 
-def accomplish(person, wait_to_accomplish):
+def accomplish(person, wait_to_accomplish, first=False):
     """ Return a message accomplishing a person """
     # Wait some time, just to give an impression that Robbie is reading.
     time.sleep(wait_to_accomplish)
-
-    if person['name'] == CREATOR_NICKNAME:
+    if first:
+        responses = ["All hail %s! The worthy first of the day!",
+                     "May the force be with you %s! And remember, the force will be with you always...",
+                     "The force is strong with %s today! For the rest: Do. Or do not. There is no try.",
+                     "Congratulations to %s for being first! Now Carpe diem. Seize the day, team. Make your lives extraordinary.",
+                     "Hey %s! I'm pretty sure there's a lot more to life than being really, really, ridiculously good looking like you. And I plan on you finding out what that is! Keep amazing us with your updates! (and keep being first, alright? alright)",
+                     "In Switzerland they had brotherly love and 500 years of democracy and peace, and what did that produce? Certainly not you, %s! First between the Cloudwalk comrades.",
+                     "Life is a box of chocolates, %s, You never know what you're gonna get, but today we got you FIRST!",
+                     "Hey %s, you earned the part, team look at him, no rushing, no dragging, just precision at being first. I'm starting to believe the others are simply lying their backs like this is a sunset on a beautiful beach! Right? IT IS NOT, OK? BE ON MY BEAT LIKE THE GROWNUPS YOU ARE, and I'll scream ALL I WANT, because the next Charlie Parker would never be discouraged.",
+                     "Oh my gosh, look at that fluffy unicorn! %s was first! He's so fluffy, I'm gonna die!",
+                     "Say hello to my little friend %s Today's first! Now to infinity... and beyond!",
+                     "Thanks for being first %s! you smell like pine needles and you have a face like sunshine!"]
+    elif person['name'] == CREATOR_NICKNAME:
         responses = ['Nice work creator %s :thumbsup:',
                      'Thanks my creator %s :thumbsup:',
                      "You've been busy master %s, you deserve a break! Well done :thumbsup:",
@@ -65,21 +76,6 @@ def deny_request(person):
                  "Keep trying %s, but it won't work :grin:",
                  "%s `secret code activation success` this meeting will self-destruct in 5-4-3-2...",
                  "%s you really must try harder than that."]
-    return random.choice(responses) % link(person)
-
-def praise_first(person):
-    """ Return a message to praise the first person who answer @robbie's call. """
-    responses = ["All hail %s! The worthy first of the day!",
-                 "May the force be with you %s! And remember, the force will be with you always...",
-                 "The force is strong with %s today! For the rest: Do. Or do not. There is no try.",
-                 "Congratulations to %s for being first! Now Carpe diem. Seize the day, team. Make your lives extraordinary.",
-                 "Hey %s! I'm pretty sure there's a lot more to life than being really, really, ridiculously good looking like you. And I plan on you finding out what that is! Keep amazing us with your updates! (and keep being first, alright? alright)",
-                 "In Switzerland they had brotherly love and 500 years of democracy and peace, and what did that produce? Certainly not you, %s! First between the Cloudwalk comrades.",
-                 "Life is a box of chocolates, %s, You never know what you're gonna get, but today we got you FIRST!",
-                 "Hey %s, you earned the part, team look at him, no rushing, no dragging, just precision at being first. I'm starting to believe the others are simply lying their backs like this is a sunset on a beautiful beach! Right? IT IS NOT, OK? BE ON MY BEAT LIKE THE GROWNUPS YOU ARE, and I'll scream ALL I WANT, because the next Charlie Parker would never be discouraged.",
-                 "Oh my gosh, look at that fluffy unicorn! %s was first! He's so fluffy, I'm gonna die!",
-                 "Say hello to my little friend %s Today's first! Now to infinity... and beyond!",
-                 "Thanks for being first %s! you smell like pine needles and you have a face like sunshine!"]
     return random.choice(responses) % link(person)
 
 def talk(person, data):
@@ -157,10 +153,6 @@ class StandUpQueue(object):
         """
         if user not in self.queue and user not in self.done:
             self.queue.append(user)
-            # Praise the first person to respond to the meeting call
-            if len(self.queue) == 1 and len(self.done) == 0:
-                self.outputs.append([self.channel_id,
-                                    praise_first(user)])
         elif user in self.done:
             # Remove from timeout people talking after we said they're done, as
             # this means they are responding
@@ -170,9 +162,12 @@ class StandUpQueue(object):
                     if is_valid_report(message):
                         print 'Valid report'
                         self.timeout.remove((person, t))
+                        is_first = len(self.done) == 1
                         # Accomplish person on channel
                         self.outputs.append([self.channel_id,
-                                        accomplish(user, self.wait_to_accomplish)])
+                                             accomplish(user,
+                                                        self.wait_to_accomplish,
+                                                        is_first)])
                         # Reset counter to give people time to read the report
                         self.last_call = time.time()
                     else:
