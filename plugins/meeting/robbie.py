@@ -16,8 +16,6 @@ WAIT_TO_ACCOMPLISH = 10
 # In fact this means we'll effectively wait WAIT_BEFORE_START + WAIT_TO_CALL_NEXT
 # seconds before starting to call people
 WAIT_BEFORE_START = 1.5*60
-# Set this to true when developing to avoid Robbie starting a meeting on
-# our stand-up channel
 
 # Load rtmbot configuration
 config = yaml.load(file('rtmbot.conf', 'r'))
@@ -36,6 +34,8 @@ STAND_UP_CHANNEL = 'C04KCMH41' # #daily-stand-up
 
 if DEV:
     channel_id = 'G0BDSLJSG' # bogus channel
+    WAIT_BEFORE_START = 5
+    WAIT_TO_CALL_NEXT = 5
 else:
     channel_id = STAND_UP_CHANNEL
 
