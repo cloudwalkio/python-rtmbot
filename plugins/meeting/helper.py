@@ -1,6 +1,8 @@
 import time
 import datetime
 import random
+import math
+import tournament
 
 CREATOR_NICKNAME = 'allanino'
 
@@ -108,11 +110,34 @@ def goodbye():
                  "All done <!channel>, I'm tired now..shutting dow.."]
     return random.choice(responses)
 
+def announce_scores(link):
+    return "Hey people! Here are your cummulative scores: %s" % link
+
+def announce_champions(names):
+    """ Argument is list with names. """
+    if len(names) > 1:
+        responses = "Wow, we have more than one champion! What are the chances??"
+        response += "Don't know, my master failed to compute it.\n"
+        response += "In any case, congratulations to our champions!\n"
+        for name in names:
+            response += "- %s\n" % name
+        return response
+    else:
+        responses = ["And this tournament champion is %s! How fast is our champion? Faster than a laser bullet!",
+                     "Congratulations, %s! You are the champion, my friend!"]
+        return random.choice(responses) % names[0]
+
 def is_valid_report(message):
     """ Check if a report is valid, i.e., if it has more than 6 lines, more than
         150 chars and has '-' on tick.
     """
     return len(message.split('\n')) >= 6 and '-' in message and len(message) > 150
+
+def score(n):
+    """ Compute score for our tournament, given attendance position n.
+    Persons responding first gets more points.
+    """
+    return 3.0*math.exp(-0.18*n)
 
 class StandUpQueue(object):
     def __init__(self, wait_to_accomplish, wait_before_start, wait_to_call_next,
@@ -135,6 +160,7 @@ class StandUpQueue(object):
         self.queue = []
         self.done = []
         self.timeout = []
+        self.names = []
         self.finished = False
         self.last_call = time.time() + wait_before_start
         self.wait_to_accomplish = wait_to_accomplish
@@ -170,6 +196,8 @@ class StandUpQueue(object):
                                                         is_first)])
                         # Reset counter to give people time to read the report
                         self.last_call = time.time()
+                        # Add to names list to have it's score computed for tournament
+                        self.names.append(person['profile']['first_name'])
                     else:
                         print 'Invalid report'
 
@@ -193,6 +221,13 @@ class StandUpQueue(object):
                 self.outputs.append([self.channel_id, call(person, is_first)])
             else:
                 if not self.finished:
+                    # Compute tournament scores and post it
+                    try:
+                        self.post_tournmanent_progress()
+                    except Exception, e:
+                        # Just inform it, but don't worry, it's not crucial
+                        print 'Could not post tournament progress: %s' % e
+
                     # Say goodbye
                     self.outputs.append([self.channel_id,  goodbye()])
                     self.finished = True
@@ -216,3 +251,17 @@ class StandUpQueue(object):
         """ Handle a message directed to Robbie. """
 
         self.outputs.append([self.channel_id, talk(person, data)])
+
+    def post_tournmanent_progress(self):
+        # Compute tournament scores.
+        scores = [score(n) for n in range(len(self.names))]
+
+        # Update plot
+        link, champions = tournament.add_data(self.names, scores)
+
+        # Post link to scores plot
+        self.outputs.append([self.channel_id, announce_scores(link)])
+
+        # Announce champions, if we have any!
+        if champions:
+            self.outputs.append([self.channel_id, announce_champions(champions)])
