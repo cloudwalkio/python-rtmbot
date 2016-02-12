@@ -72,7 +72,7 @@ def add_data(names, scores):
         py.plot([{'x': 1, 'name': 'counter'}], filename=COUNTER_FILENAME,
                 fileopt='overwrite', auto_open=False)
         day = 1
-    if day > 5 and weekday == 7: # If Friday, finish this competition
+    if day > 5 and weekday == 5: # If Friday, finish this competition
         title = 'Final scores!'
 
     # Update scores plot and get it's link
