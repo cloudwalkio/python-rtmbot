@@ -197,7 +197,7 @@ class StandUpQueue(object):
                         # Reset counter to give people time to read the report
                         self.last_call = time.time()
                         # Add to names list to have it's score computed for tournament
-                        self.names.append(person['profile']['first_name'])
+                        self.names.append(person['name'])
                     else:
                         print 'Invalid report'
 
